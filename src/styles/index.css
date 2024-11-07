@@ -29,3 +29,39 @@
     width: 100%;
     height: 100%;
 }
+
+.genre {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.genre__label {
+    font-size: var(--font-2);
+    color: var(--color-grey-1);
+    font-weight: var(--font-weight-2);
+}
+
+.nav__genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.genre__button {
+    border: 1px solid transparent;
+    padding: 10px 8px;
+    border-radius: var(--radius-1);
+    background-color: var(--color-grey-8);
+    color: var(--color-grey-2);
+    font-weight: var(--font-weight-3);
+    font-size: var(--font-3);
+    cursor: pointer;
+}
+
+.genre__button--active {
+    background-color: var(--color-grey-1);
+    font-weight: var(--font-weight-2);
+    color: var(--color-grey-9);
+    pointer-events: none;
+}
