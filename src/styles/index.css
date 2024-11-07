@@ -36,7 +36,7 @@
     gap: 24px;
 }
 
-.genre__label {
+.title-sections {
     font-size: var(--font-2);
     color: var(--color-grey-1);
     font-weight: var(--font-weight-2);
@@ -64,4 +64,20 @@
     font-weight: var(--font-weight-2);
     color: var(--color-grey-9);
     pointer-events: none;
+}
+
+.price {
+    margin-top: 60px;
+}
+
+.price__container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.price__label {
+    font-size: var(--font-2);
+    font-weight: 600;
+    color: var(--color-grey-1);
 }
