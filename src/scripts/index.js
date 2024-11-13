@@ -25,23 +25,22 @@ function renderGenreList(genreList) {
 
     ulGenreList.appendChild(fragment);
 
-    ulGenreList.addEventListener("click", (event) => {
-        const button = event.target.closest(".genre__button");
-        if (!button) return;
+    ulGenreList.addEventListener("click", handleGenreChange);
+}
 
-        const index = Number(button.dataset.genreId);
+function handleGenreChange(event) {
+    const button = event.target.closest(".genre__button");
+    if (!button) return;
 
-        const currentButtonActive = document.querySelector(
-            ".genre__button--active"
-        );
-        if (currentButtonActive) {
-            currentButtonActive.classList.remove("genre__button--active");
-        }
+    const genreId = Number(button.dataset.genreId);
 
-        localStorage.setItem("genreId", index);
-        button.classList.add("genre__button--active");
-        filterAlbumsByGenreId(index, products);
-    });
+    document
+        .querySelector(".genre__button--active")
+        ?.classList.remove("genre__button--active");
+    button.classList.add("genre__button--active");
+
+    localStorage.setItem("genreId", genreId);
+    filterAlbumsByGenreActive(products);
 }
 
 function renderAlbumList(albumsList) {
@@ -66,8 +65,8 @@ function renderAlbumList(albumsList) {
         </div>
         <h3 class="info__title">${product.title}</h3>
         <div class="info__album-buy">
-          <strong class="album-item__price">R$ ${product.price.toFixed(
-              2
+          <strong class="album-item__price">${formatToBRL(
+              product.price
           )}</strong>
           <button class="album-item__buy-button">Comprar</button>
         </div>
@@ -78,13 +77,68 @@ function renderAlbumList(albumsList) {
         .join("");
 }
 
-function filterAlbumsByGenreId(genreId, albumsList) {
+function filterAlbumsByGenreActive(albumsList) {
+    const genreIdActive = Number(localStorage.getItem("genreId")) || 0;
+
     const filteredAlbumList =
-        genreId === 0
-            ? albumsList
-            : albumsList.filter((element) => element.category === genreId);
+        genreIdActive === 0
+            ? filterAlbumsByPrice(albumsList)
+            : filterAlbumsByPrice(
+                  albumsList.filter((album) => album.category === genreIdActive)
+              );
+
     renderAlbumList(filteredAlbumList);
 }
 
+function filterAlbumsByPrice(albumsList) {
+    const inputRangeValue = Number(
+        document.querySelector("#price-range").value
+    );
+    return albumsList.filter((album) => album.price <= inputRangeValue);
+}
+
+function handleInputRange(albumsList) {
+    const inputRange = document.querySelector("#price-range");
+    const priceLabel = document.querySelector("#price-label");
+
+    const [minPrice, maxPrice] = albumsList.reduce(
+        ([min, max], { price }) => [Math.min(min, price), Math.max(max, price)],
+        [Infinity, 0]
+    );
+
+    inputRange.value = maxPrice;
+    inputRange.min = minPrice;
+    inputRange.max = maxPrice;
+
+    priceLabel.textContent = formatToBRL(maxPrice);
+
+    inputRange.addEventListener("input", () => {
+        updateInputStyle(inputRange, priceLabel);
+        filterAlbumsByGenreActive(albumsList);
+    });
+
+    updateInputStyle(inputRange, priceLabel);
+}
+
+function updateInputStyle(inputRange, priceLabel) {
+    const value = Number(inputRange.value);
+    const minValue = Number(inputRange.min);
+    const maxValue = Number(inputRange.max);
+
+    priceLabel.textContent = formatToBRL(value);
+
+    const percentage = ((value - minValue) / (maxValue - minValue)) * 100;
+
+    inputRange.style.background = `linear-gradient(to right, var(--color-brand-1) ${percentage}%, var(--color-grey-5) ${percentage}%)`;
+}
+
+function formatToBRL(value) {
+    return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    }).format(value);
+}
+
 renderGenreList(categories);
-filterAlbumsByGenreId(genreActive, products);
+filterAlbumsByGenreActive(products);
+handleInputRange(products);
