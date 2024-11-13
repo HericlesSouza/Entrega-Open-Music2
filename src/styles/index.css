@@ -61,7 +61,6 @@
 
 .genre__button--active {
     background-color: var(--color-grey-1);
-    font-weight: var(--font-weight-2);
     color: var(--color-grey-9);
     pointer-events: none;
 }

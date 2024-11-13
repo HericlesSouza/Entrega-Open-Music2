@@ -43,6 +43,10 @@ body {
     background-color: var(--color-grey-9);
 }
 
+button {
+    cursor: pointer;
+}
+
 .container {
     width: var(--container);
     max-width: 100%;
